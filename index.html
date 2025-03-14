@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi di Fattibilità - Progetto Immobiliare Parco Sim</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.4.0/chartjs-plugin-annotation.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --secondary: #0f172a;
+            --positive: #10b981;
+            --negative: #ef4444;
+            --warning: #f59e0b;
+            --light-bg: #f8fafc;
+            --light-bg-alt: #f1f5f9;
+            --border: #e2e8f0;
+            --surface: #ffffff;
+            --surface-hover: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-sm: 0.25rem;
+            --transition: all 0.2s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--light-bg);
+            padding: 0;
+            margin: 0;
+        }
+        
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.7;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            letter-spacing: -0.025em;
+        }
+        
+        .page-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            font-weight: 400;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-width: 1300px;
+            margin: -3rem auto 2rem;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+        
+        .container:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--secondary);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h2::before {
+            content: '';
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.8;
+        }
+        
+        .section-summary h2::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234f46e5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' /%3E%3C/svg%3E");
+        }
+        
+        .section-surfaces h2::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234f46e5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' /%3E%3C/svg%3E");
+        }
+        
+        .section-finances h2::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234f46e5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' /%3E%3C/svg%3E");
+        }
+        
+        .section-sensitivity h2::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234f46e5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2' /%3E%3C/svg%3E");
+        }
+        
+        .section-cashflow h2::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234f46e5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' /%3E%3C/svg%3E");
+        }
+        
+        .section-breakeven h2::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234f46e5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' /%3E%3C/svg%3E");
+        }
+        
+        .section-risks h2::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234f46e5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' /%3E%3C/svg%3E");
+        }
+        
+        .section-conclusion h2::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234f46e5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' /%3E%3C/svg%3E");
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background-color: var(--light-bg-alt);
+            font-weight: 600;
+            color: var(--secondary);
+            position: relative;
+        }
+        
+        th:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 25%;
+            height: 50%;
+            border-right: 1px solid #cbd5e1;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background-color: var(--surface-hover);
+        }
+        
+        .summary-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 1.5rem 0;
+            justify-content: space-between;
+        }
+        
+        .summary-item {
+            flex: 1;
+            min-width: 200px;
+            background-color: var(--light-bg-alt);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .summary-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .summary-icon {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            opacity: 0.15;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .summary-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+        
+        .summary-subtext {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin: 2rem 0;
+            background-color: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        
+        .tab-container {
+            margin: 2rem 0;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 1rem;
+            background-color: var(--light-bg-alt);
+            border-radius: var(--radius);
+            padding: 0.25rem;
+        }
+        
+        .tab-button {
+            background-color: transparent;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .tab-button:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .tab-button.active {
+            background-color: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            background-color: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background-color: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card.highlight {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .positive {
+            color: var(--positive);
+        }
+        
+        .negative {
+            color: var(--negative);
+        }
+        
+        .warning {
+            color: var(--warning);
+        }
+        
+        .flex-row {
+            display: flex;
+            gap: 25px;
+            margin: 1.5rem 0;
+        }
+        
+        .flex-col {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .scenario-selector {
+            display: flex;
+            gap: 10px;
+            margin: 1.5rem 0;
+            background-color: var(--light-bg-alt);
+            border-radius: var(--radius);
+            padding: 0.25rem;
+        }
+        
+        .scenario-button {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            background-color: transparent;
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            flex: 1;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        
+        .scenario-button:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .scenario-button.active {
+            background-color: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .metric-box {
+            background-color: var(--light-bg-alt);
+            padding: 1.2rem 1.5rem;
+            border-radius: var(--radius);
+            margin: 0.75rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+        
+        .metric-box:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .metric-label {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .metric-box.highlight {
+            background-color: rgba(99, 102, 241, 0.1);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .risk-table td:nth-child(2),
+        .risk-table td:nth-child(3) {
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .risk-low {
+            color: var(--positive);
+        }
+        
+        .risk-medium {
+            color: var(--warning);
+        }
+        
+        .risk-high {
+            color: var(--negative);
+        }
+        
+        /* Slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #cbd5e1 0%, var(--primary-light) 50%, #cbd5e1 100%);
+            outline: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            border: none;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type=range]::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 2rem;
+            background-color: var(--light-bg-alt);
+            border-top: 1px solid var(--border);
+        }
+        
+        @media (max-width: 1024px) {
+            .flex-row {
+                flex-direction: column;
+            }
+            
+            .flex-col {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .summary-box {
+                flex-direction: column;
+            }
+            
+            .summary-item {
+                width: 100%;
+            }
+            
+            table {
+                font-size: 0.85rem;
+                display: block;
+                overflow-x: auto;
+            }
+            
+            th, td {
+                padding: 0.75rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="page-header">
+            <h1 class="page-title">Analisi di Fattibilità</h1>
+            <p class="page-subtitle">Progetto Immobiliare Parco Sim - Via Giacomo Matteotti, San Giorgio</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="container section-summary">
+                <h2>1. Sintesi dell'Operazione</h2>
+                
+                <div class="summary-box">
+                    <div class="summary-item">
+                        <i class="fas fa-money-bill-wave summary-icon"></i>
+                        <div class="summary-label">Prezzo di acquisto</div>
+                        <div class="summary-value">€900.000</div>
+                    </div>
+                    <div class="summary-item">
+                        <i class="fas fa-home summary-icon"></i>
+                        <div class="summary-label">Superficie totale</div>
+                        <div class="summary-value">728,6 mq</div>
+                        <div class="summary-subtext">Superficie commerciale: 796,04 mq</div>
+                    </div>
+                    <div class="summary-item">
+                        <i class="fas fa-tools summary-icon"></i>
+                        <div class="summary-label">Budget ristrutturazione</div>
+                        <div class="summary-value">€510.020</div>
+                        <div class="summary-subtext">€700/mq</div>
+                    </div>
+                    <div class="summary-item">
+                        <i class="fas fa-chart-line summary-icon"></i>
+                        <div class="summary-label">Ricavo previsto</div>
+                        <div class="summary-value">€2.149.308</div>
+                        <div class="summary-subtext">€2.700/mq medio</div>
+                    </div>
+                </div>
+                
+                <div class="summary-box">
+                    <div class="summary-item">
+                        <i class="fas fa-calendar-alt summary-icon"></i>
+                        <div class="summary-label">Durata operazione</div>
+                        <div class="summary-value">7-8 mesi</div>
+                        <div class="summary-subtext">3 mesi ristrutturazione + 4-5 mesi vendita</div>
+                    </div>
+                    <div class="summary-item">
+                        <i class="fas fa-chart-pie summary-icon"></i>
+                        <div class="summary-label">Margine lordo</div>
+                        <div class="summary-value">€614.788</div>
+                    </div>
+                    <div class="summary-item">
+                        <i class="fas fa-hand-holding-usd summary-icon"></i>
+                        <div class="summary-label">Utile netto</div>
+                        <div class="summary-value">€443.262</div>
+                    </div>
+                    <div class="summary-item">
+                        <i class="fas fa-percentage summary-icon"></i>
+                        <div class="summary-label">ROI</div>
+                        <div class="summary-value">28,9%</div>
+                        <div class="summary-subtext">~43-49% annualizzato</div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="container section-surfaces">
+                <h2>2. Analisi delle Superfici</h2>
+                
+                <h3>Dettaglio Unità Immobiliari</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>SUB</th>
+                            <th>Scala</th>
+                            <th>Interno</th>
+                            <th>Piano</th>
+                            <th>Appartamento (mq)</th>
+                            <th>Balconi (mq)</th>
+                            <th>Giardino (mq)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>45</td>
+                            <td>H</td>
+                            <td>1</td>
+                            <td>R</td>
+                            <td>161,6</td>
+                            <td>50,8</td>
+                            <td>44,4</td>
+                        </tr>
+                        <tr>
+                            <td>46</td>
+                            <td>H</td>
+                            <td>2</td>
+                            <td>R</td>
+                            <td>131,0</td>
+                            <td>33,9</td>
+                            <td>35,7</td>
+                        </tr>
+                        <tr>
+                            <td>47</td>
+                            <td>H</td>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>161,6</td>
+                            <td>50,8</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>49</td>
+                            <td>I</td>
+                            <td>1</td>
+                            <td>R</td>
+                            <td>139,0</td>
+                            <td>31,3</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>50</td>
+                            <td>I</td>
+                            <td>2</td>
+                            <td>R</td>
+                            <td>135,4</td>
+                            <td>31,3</td>
+                            <td>-</td>
+                        </tr>
+                        <tr style="font-weight: bold; background-color: var(--light-bg-alt);">
+                            <td colspan="4">TOTALE</td>
+                            <td>728,6</td>
+                            <td>198,1</td>
+                            <td>80,1</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>Superficie Commerciale</h3>
+                <div class="card highlight">
+                    <p>Calcolata considerando:</p>
+                    <ul>
+                        <li>100% superficie residenziale</li>
+                        <li>30% superficie balconi</li>
+                        <li>10% superficie giardini</li>
+                    </ul>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>SUB</th>
+                            <th>Appartamento (mq)</th>
+                            <th>Balconi (30%)</th>
+                            <th>Giardino (10%)</th>
+                            <th>Superficie commerciale (mq)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>45</td>
+                            <td>161,6</td>
+                            <td>15,24</td>
+                            <td>4,44</td>
+                            <td>181,28</td>
+                        </tr>
+                        <tr>
+                            <td>46</td>
+                            <td>131,0</td>
+                            <td>10,17</td>
+                            <td>3,57</td>
+                            <td>144,74</td>
+                        </tr>
+                        <tr>
+                            <td>47</td>
+                            <td>161,6</td>
+                            <td>15,24</td>
+                            <td>-</td>
+                            <td>176,84</td>
+                        </tr>
+                        <tr>
+                            <td>49</td>
+                            <td>139,0</td>
+                            <td>9,39</td>
+                            <td>-</td>
+                            <td>148,39</td>
+                        </tr>
+                        <tr>
+                            <td>50</td>
+                            <td>135,4</td>
+                            <td>9,39</td>
+                            <td>-</td>
+                            <td>144,79</td>
+                        </tr>
+                        <tr style="font-weight: bold; background-color: var(--light-bg-alt);">
+                            <td>TOTALE</td>
+                            <td>728,6</td>
+                            <td>59,43</td>
+                            <td>8,01</td>
+                            <td>796,04</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="container section-finances">
+                <h2>3. Conto Economico</h2>
+                
+                <div class="scenario-selector">
+                    <button class="scenario-button active" data-scenario="base">Scenario Base</button>
+                    <button class="scenario-button" data-scenario="pessimistico">Scenario Pessimistico</button>
+                    <button class="scenario-button" data-scenario="ottimistico">Scenario Ottimistico</button>
+                </div>
+                
+                <div class="flex-row">
+                    <div class="flex-col">
+                        <h3>Costi</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Voce di costo</th>
+                                    <th>Importo (€)</th>
+                                    <th>Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="fas fa-building fa-fw"></i> Acquisto immobili</td>
+                                    <td>900.000</td>
+                                    <td>Prezzo concordato</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-receipt fa-fw"></i> IVA sull'acquisto</td>
+                                    <td>90.000</td>
+                                    <td>10% sul prezzo di acquisto</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-file-signature fa-fw"></i> Costi notarili</td>
+                                    <td>10.000</td>
+                                    <td>Spese per atto notarile</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-hammer fa-fw"></i> Ristrutturazione</td>
+                                    <td>510.020</td>
+                                    <td>€700/mq × 728,6 mq</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-handshake fa-fw"></i> Commissioni agenzie</td>
+                                    <td>20.000</td>
+                                    <td>Per la commercializzazione</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-file-invoice-dollar fa-fw"></i> Imposte e oneri vari</td>
+                                    <td>4.500</td>
+                                    <td>Stima altre imposte</td>
+                                </tr>
+                                <tr style="font-weight: bold; background-color: var(--light-bg-alt);">
+                                    <td>TOTALE COSTI</td>
+                                    <td>1.534.520</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="flex-col">
+                        <h3>Ricavi</h3>
+                        <table class="scenario-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Prezzo al mq (€)</th>
+                                    <th>Superficie (mq)</th>
+                                    <th>Ricavo totale (€)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-scenario="pessimistico">
+                                    <td><i class="fas fa-arrow-down fa-fw"></i> Pessimistico</td>
+                                    <td>2.500</td>
+                                    <td>796,04</td>
+                                    <td>1.990.100</td>
+                                </tr>
+                                <tr data-scenario="base" style="font-weight: bold; background-color: rgba(99, 102, 241, 0.1);">
+                                    <td><i class="fas fa-equals fa-fw"></i> Base</td>
+                                    <td>2.700</td>
+                                    <td>796,04</td>
+                                    <td>2.149.308</td>
+                                </tr>
+                                <tr data-scenario="ottimistico">
+                                    <td><i class="fas fa-arrow-up fa-fw"></i> Ottimistico</td>
+                                    <td>3.000</td>
+                                    <td>796,04</td>
+                                    <td>2.388.120</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h3>Risultato Economico</h3>
+                        <div id="risultato-economico">
+                            <div class="metric-box highlight">
+                                <div class="metric-label"><i class="fas fa-coins fa-fw"></i> Ricavi totali</div>
+                                <div class="metric-value">€2.149.308</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-label"><i class="fas fa-money-bill-wave fa-fw"></i> Costi totali</div>
+                                <div class="metric-value">€1.534.520</div>
+                            </div>
+                            <div class="metric-box highlight">
+                                <div class="metric-label"><i class="fas fa-chart-line fa-fw"></i> Margine lordo</div>
+                                <div class="metric-value">€614.788</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-label"><i class="fas fa-balance-scale fa-fw"></i> Imposte (27,9%)</div>
+                                <div class="metric-value">€171.526</div>
+                            </div>
+                            <div class="metric-box highlight">
+                                <div class="metric-label"><i class="fas fa-hand-holding-usd fa-fw"></i> Utile netto</div>
+                                <div class="metric-value">€443.262</div>
+                            </div>
+                            <div class="metric-box highlight">
+                                <div class="metric-label"><i class="fas fa-percentage fa-fw"></i> ROI</div>
+                                <div class="metric-value">28,9%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+    <div class="container">
+        <h2>4. Analisi di Sensibilità</h2>
+        
+        <div class="flex-row">
+            <div class="flex-col">
+                <h3>Variazione del prezzo di vendita</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Prezzo al mq (€)</th>
+                            <th>Ricavo totale (€)</th>
+                            <th>Margine lordo (€)</th>
+                            <th>Utile netto (€)</th>
+                            <th>ROI (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2.500</td>
+                            <td>1.990.100</td>
+                            <td>455.580</td>
+                            <td>328.473</td>
+                            <td>21,4%</td>
+                        </tr>
+                        <tr style="font-weight: bold; background-color: #dbeafe;">
+                            <td>2.700</td>
+                            <td>2.149.308</td>
+                            <td>614.788</td>
+                            <td>443.262</td>
+                            <td>28,9%</td>
+                        </tr>
+                        <tr>
+                            <td>3.000</td>
+                            <td>2.388.120</td>
+                            <td>853.600</td>
+                            <td>615.446</td>
+                            <td>40,1%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="chart-container">
+                    <canvas id="prezzoChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nuova sezione per l'analisi di sensibilità interattiva -->
+        <div class="flex-row" style="margin-top: 3rem;">
+            <div class="flex-col">
+                <h3>Analisi di Sensibilità Interattiva - Prezzo di Vendita</h3>
+                <div class="card" style="padding: 2rem;">
+                    <div style="margin-bottom: 2rem;">
+                        <label for="prezzoSlider" class="metric-label" style="display: block; margin-bottom: 0.5rem;">
+                            Prezzo di vendita al mq: <span id="prezzoDisplay" style="font-weight: bold; color: var(--primary);">€2.700</span>
+                        </label>
+                        <input type="range" id="prezzoSlider" min="1900" max="3500" step="50" value="2700" style="width: 100%; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                            <span>€1.900</span>
+                            <span>€2.700</span>
+                            <span>€3.500</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <div class="metric-box">
+                                <div class="metric-label">Ricavo totale</div>
+                                <div id="ricavoDisplay" class="metric-value">€2.149.308</div>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <div class="metric-box">
+                                <div class="metric-label">Margine lordo</div>
+                                <div id="margineDisplay" class="metric-value">€614.788</div>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <div class="metric-box highlight">
+                                <div class="metric-label">Utile netto</div>
+                                <div id="utileDisplay" class="metric-value">€443.262</div>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <div class="metric-box highlight">
+                                <div class="metric-label">ROI</div>
+                                <div id="roiDisplay" class="metric-value">28,9%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="sensibilitaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex-row">
+            <div class="flex-col">
+                <h3>Variazione del costo di ristrutturazione</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Costo al mq (€)</th>
+                            <th>Costo totale (€)</th>
+                            <th>Margine lordo (€)</th>
+                            <th>Utile netto (€)</th>
+                            <th>ROI (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>650</td>
+                            <td>473.590</td>
+                            <td>651.218</td>
+                            <td>469.528</td>
+                            <td>31,6%</td>
+                        </tr>
+                        <tr style="font-weight: bold; background-color: #dbeafe;">
+                            <td>700</td>
+                            <td>510.020</td>
+                            <td>614.788</td>
+                            <td>443.262</td>
+                            <td>28,9%</td>
+                        </tr>
+                        <tr>
+                            <td>750</td>
+                            <td>546.450</td>
+                            <td>578.358</td>
+                            <td>416.996</td>
+                            <td>26,2%</td>
+                        </tr>
+                        <tr>
+                            <td>800</td>
+                            <td>582.880</td>
+                            <td>541.928</td>
+                            <td>390.730</td>
+                            <td>23,8%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="chart-container">
+                    <canvas id="ristrutturazioneCostoChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>5. Flusso di Cassa</h2>
+        
+        <h3>Timeline dell'operazione (8 mesi)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fase</th>
+                    <th>Periodo</th>
+                    <th>Flusso di cassa</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Acquisto e imposte</td>
+                    <td>Mese 1</td>
+                    <td class="negative">-€1.000.000</td>
+                </tr>
+                <tr>
+                    <td>Ristrutturazione</td>
+                    <td>Mesi 2-4</td>
+                    <td class="negative">-€170.007/mese</td>
+                </tr>
+                <tr>
+                    <td>Vendita</td>
+                    <td>Mesi 5-8</td>
+                    <td class="positive">+€537.327/mese</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="chart-container">
+            <canvas id="cashFlowChart"></canvas>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>6. Analisi del Punto di Pareggio</h2>
+        
+        <div class="flex-row">
+            <div class="flex-col">
+                <h3>Prezzo di vendita minimo</h3>
+                <div class="card">
+                    <ul>
+                        <li><strong>Costi totali:</strong> €1.534.520</li>
+                        <li><strong>Superficie commerciale:</strong> 796,04 mq</li>
+                        <li><strong>Prezzo di pareggio:</strong> €1.927,70/mq</li>
+                        <li><strong>Margine di sicurezza:</strong> 29,7% rispetto al prezzo worst case (€2.500/mq)</li>
+                    </ul>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="breakEvenChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>7. Analisi dei Rischi</h2>
+        
+        <table class="risk-table">
+            <thead>
+                <tr>
+                    <th>Rischio</th>
+                    <th>Probabilità</th>
+                    <th>Impatto</th>
+                    <th>Strategie di mitigazione</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Aumento costi di ristrutturazione</td>
+                    <td class="risk-medium">Media</td>
+                    <td class="risk-medium">Medio</td>
+                    <td>Contratti a prezzo fisso, contingency budget</td>
+                </tr>
+                <tr>
+                    <td>Ritardi nella ristrutturazione</td>
+                    <td class="risk-medium">Media</td>
+                    <td class="risk-medium">Medio</td>
+                    <td>Penali nei contratti, pianificazione buffer</td>
+                </tr>
+                <tr>
+                    <td>Difficoltà di vendita</td>
+                    <td class="risk-low">Bassa</td>
+                    <td class="risk-high">Alto</td>
+                    <td>Marketing mirato, possibilità di vendita sulla carta</td>
+                </tr>
+                <tr>
+                    <td>Calo dei prezzi di mercato</td>
+                    <td class="risk-low">Bassa</td>
+                    <td class="risk-high">Alto</td>
+                    <td>Margine di sicurezza elevato, flessibilità su prezzo</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="container">
+        <h2>8. Conclusioni e Raccomandazioni</h2>
+        
+        <h3>Indicatori di fattibilità</h3>
+        <div class="summary-box">
+            <div class="summary-item">
+                <div class="summary-label">Return on Investment</div>
+                <div class="summary-value">28,9%</div>
+                <div class="summary-subtext">43-49% annualizzato</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Durata</div>
+                <div class="summary-value">7-8 mesi</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Margine di sicurezza</div>
+                <div class="summary-value">29,7%</div>
+                <div class="summary-subtext">sul prezzo di vendita</div>
+            </div>
+        </div>
+        
+        <h3>Raccomandazioni</h3>
+        <ol>
+            <li><strong>Procedere con l'operazione:</strong> Gli indicatori economici mostrano una redditività interessante con un buon margine di sicurezza.</li>
+            <li><strong>Contratti di ristrutturazione:</strong> Stipulare contratti a prezzo fisso per limitare il rischio di aumento costi.</li>
+            <li><strong>Strategia di vendita:</strong> Considerare la possibilità di iniziare la commercializzazione già durante la fase di ristrutturazione.</li>
+            <li><strong>Differenziazione:</strong> Valutare una strategia di pricing differenziata per le unità con giardino e quelle al primo piano.</li>
+        </ol>
+        
+        <div class="card" style="margin-top: 2rem;">
+            <p style="font-weight: 600; font-size: 1.1rem;">
+                L'operazione presenta un profilo rischio/rendimento favorevole, con un ROI atteso del 28,9% su un periodo di 7-8 mesi, equivalente a un rendimento annualizzato di circa il 43-49%.
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Dati scenari
+        const scenariData = {
+            pessimistico: {
+                prezzoMq: 2500,
+                ricavoTotale: 1990100,
+                margineLordo: 455580,
+                utileNetto: 328473,
+                roi: 21.4
+            },
+            base: {
+                prezzoMq: 2700,
+                ricavoTotale: 2149308,
+                margineLordo: 614788,
+                utileNetto: 443262,
+                roi: 28.9
+            },
+            ottimistico: {
+                prezzoMq: 3000,
+                ricavoTotale: 2388120,
+                margineLordo: 853600,
+                utileNetto: 615446,
+                roi: 40.1
+            }
+        };
+        
+        // Funzione per formattare i numeri come valuta
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(amount);
+        }
+        
+        // Funzione per aggiornare i risultati economici in base allo scenario
+        function updateRisultatoEconomico(scenario) {
+            const data = scenariData[scenario];
+            const risultatoEconomico = document.getElementById('risultato-economico');
+            const metrics = risultatoEconomico.querySelectorAll('.metric-value');
+            
+            metrics[0].textContent = formatCurrency(data.ricavoTotale);
+            metrics[2].textContent = formatCurrency(data.margineLordo);
+            const imposte = data.margineLordo * 0.279;
+            metrics[3].textContent = formatCurrency(imposte);
+            metrics[4].textContent = formatCurrency(data.utileNetto);
+            metrics[5].textContent = data.roi + '%';
+        }
+        
+        // Gestione pulsanti scenario
+        const scenarioButtons = document.querySelectorAll('.scenario-button');
+        scenarioButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                scenarioButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const scenario = button.getAttribute('data-scenario');
+                updateRisultatoEconomico(scenario);
+                
+                // Evidenzia la riga nella tabella degli scenari
+                const scenarioRows = document.querySelectorAll('.scenario-table tbody tr');
+                scenarioRows.forEach(row => {
+                    if (row.getAttribute('data-scenario') === scenario) {
+                        row.style.fontWeight = 'bold';
+                        row.style.backgroundColor = '#dbeafe';
+                    } else {
+                        row.style.fontWeight = 'normal';
+                        row.style.backgroundColor = '';
+                    }
+                });
+            });
+        });
+        
+        // Grafici
+        window.onload = function() {
+            // Grafico prezzi vendita
+            const ctxPrezzo = document.getElementById('prezzoChart').getContext('2d');
+            const prezzoChart = new Chart(ctxPrezzo, {
+                type: 'bar',
+                data: {
+                    labels: ['€2.500/mq', '€2.700/mq', '€3.000/mq'],
+                    datasets: [{
+                        label: 'ROI (%)',
+                        data: [21.4, 28.9, 40.1],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.5)',
+                            'rgba(16, 185, 129, 0.5)',
+                            'rgba(59, 130, 246, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgb(37, 99, 235)',
+                            'rgb(5, 150, 105)',
+                            'rgb(37, 99, 235)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Impatto del prezzo di vendita sul ROI',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'ROI (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Prezzo di vendita al mq'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Analisi di sensibilità interattiva
+            const slider = document.getElementById('prezzoSlider');
+            const prezzoDisplay = document.getElementById('prezzoDisplay');
+            const ricavoDisplay = document.getElementById('ricavoDisplay');
+            const margineDisplay = document.getElementById('margineDisplay');
+            const utileDisplay = document.getElementById('utileDisplay');
+            const roiDisplay = document.getElementById('roiDisplay');
+            
+            // Superficie commerciale totale in mq
+            const superficieCommerciale = 796.04;
+            
+            // Costi totali (esclusi i costi che dipendono dal prezzo di vendita)
+            const costiTotali = 1534520;
+            
+            // Aliquota fiscale per il calcolo dell'utile netto
+            const aliquotaFiscale = 0.279;
+            
+            // Funzione per calcolare i valori in base al prezzo di vendita
+            function calcolaSensibilita(prezzoMq) {
+                // Calcoli finanziari
+                const ricavoTotale = prezzoMq * superficieCommerciale;
+                const margineLordo = ricavoTotale - costiTotali;
+                const imposte = Math.max(0, margineLordo * aliquotaFiscale);
+                const utileNetto = margineLordo - imposte;
+                const roi = (utileNetto / costiTotali) * 100;
+                
+                return {
+                    ricavoTotale,
+                    margineLordo,
+                    utileNetto,
+                    roi
+                };
+            }
+            
+            // Aggiorna i display con i valori calcolati
+            function aggiornaDisplay(prezzoMq) {
+                const risultati = calcolaSensibilita(prezzoMq);
+                
+                prezzoDisplay.textContent = `€${prezzoMq.toLocaleString('it-IT')}`;
+                ricavoDisplay.textContent = formatCurrency(risultati.ricavoTotale);
+                margineDisplay.textContent = formatCurrency(risultati.margineLordo);
+                utileDisplay.textContent = formatCurrency(risultati.utileNetto);
+                roiDisplay.textContent = risultati.roi.toFixed(1) + '%';
+                
+                // Cambia il colore dell'utile e ROI in base al segno
+                utileDisplay.style.color = risultati.utileNetto >= 0 ? 'var(--positive)' : 'var(--negative)';
+                roiDisplay.style.color = risultati.roi >= 0 ? 'var(--positive)' : 'var(--negative)';
+                
+                // Aggiorna il grafico se esiste
+                if (window.sensibilitaChart) {
+                    aggiornaGraficoSensibilita();
+                }
+            }
+            
+            // Inizializza il grafico di sensibilità
+            const ctxSensibilita = document.getElementById('sensibilitaChart').getContext('2d');
+            
+            // Crea dati per il grafico di sensibilità
+            function creaDatiSensibilita() {
+                const prezzi = [];
+                const utili = [];
+                const rois = [];
+                
+                // Genera punti per il grafico (aumentiamo la risoluzione per maggiore precisione)
+                for (let prezzo = 1900; prezzo <= 3500; prezzo += 20) {
+                    const risultati = calcolaSensibilita(prezzo);
+                    prezzi.push(`€${prezzo}`);
+                    utili.push(risultati.utileNetto);
+                    rois.push(risultati.roi);
+                }
+                
+                return { prezzi, utili, rois };
+            }
+            
+            // Inizializza il grafico
+            function creaGraficoSensibilita() {
+                const dati = creaDatiSensibilita();
+                
+                window.sensibilitaChart = new Chart(ctxSensibilita, {
+                    type: 'line',
+                    data: {
+                        labels: dati.prezzi,
+                        datasets: [
+                            {
+                                label: 'Utile Netto (€)',
+                                data: dati.utili,
+                                borderColor: 'rgb(5, 150, 105)',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                yAxisID: 'y',
+                                fill: true,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'ROI (%)',
+                                data: dati.rois,
+                                borderColor: 'rgb(37, 99, 235)',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                yAxisID: 'y1',
+                                fill: false,
+                                tension: 0.3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Sensibilità al prezzo di vendita',
+                                font: { size: 16 }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.dataset.yAxisID === 'y') {
+                                            label += formatCurrency(context.raw);
+                                        } else {
+                                            label += context.raw.toFixed(1) + '%';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Prezzo al mq'
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    callback: function(value, index, values) {
+                                        // Mostra solo alcuni valori per evitare sovrapposizioni
+                                        if (index % 4 === 0) {
+                                            return this.getLabelForValue(index);
+                                        }
+                                    }
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Utile Netto (€)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatCurrency(value);
+                                    }
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'ROI (%)'
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+                
+                // Aggiungi linea per prezzo di pareggio
+                const breakEvenPrice = 1927.7;
+                
+                // Calcola l'indice più vicino al prezzo di pareggio esatto
+                let breakEvenIndex = -1;
+                let minDiff = Number.MAX_VALUE;
+                
+                dati.prezzi.forEach((prezzoStr, index) => {
+                    const prezzo = parseFloat(prezzoStr.replace('€', ''));
+                    const diff = Math.abs(prezzo - breakEvenPrice);
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        breakEvenIndex = index;
+                    }
+                });
+                
+                if (breakEvenIndex >= 0) {
+                    window.sensibilitaChart.options.plugins.annotation = {
+                        annotations: {
+                            breakEvenLine: {
+                                type: 'line',
+                                xMin: breakEvenIndex,
+                                xMax: breakEvenIndex,
+                                borderColor: 'rgba(239, 68, 68, 0.7)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                label: {
+                                    content: 'Prezzo di pareggio',
+                                    enabled: true,
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    };
+                    
+                    // Disegna una linea verticale per il prezzo di pareggio
+                    const breakEvenPlugin = {
+                        id: 'breakEvenAnnotation',
+                        afterDraw: (chart) => {
+                            const { ctx, chartArea, scales } = chart;
+                            const x = scales.x.getPixelForValue(breakEvenIndex);
+                            
+                            ctx.save();
+                            ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+                            ctx.lineWidth = 2;
+                            ctx.setLineDash([5, 5]);
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(x, chartArea.top);
+                            ctx.lineTo(x, chartArea.bottom);
+                            ctx.stroke();
+                            
+                            // Etichetta per il prezzo di pareggio
+                            ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+                            ctx.fillRect(x - 60, chartArea.top - 20, 120, 20);
+                            ctx.fillStyle = 'white';
+                            ctx.textAlign = 'center';
+                            ctx.fillText('Punto di pareggio', x, chartArea.top - 7);
+                            
+                            ctx.restore();
+                        }
+                    };
+                    
+                    // Registra il plugin
+                    Chart.register(breakEvenPlugin);
+                }
+            }
+            
+            // Aggiorna il grafico di sensibilità con il valore corrente dello slider
+            function aggiornaGraficoSensibilita() {
+                const currentPrice = parseInt(slider.value);
+                // Aggiorniamo solo i dati, non ricreiamo il grafico
+                window.sensibilitaChart.update();
+            }
+            
+            // Evento change per lo slider
+            slider.addEventListener('input', function() {
+                const prezzoMq = parseInt(this.value);
+                aggiornaDisplay(prezzoMq);
+            });
+            
+            // Inizializza il grafico e i display
+            creaGraficoSensibilita();
+            aggiornaDisplay(parseInt(slider.value));
+            
+            // Grafico costi ristrutturazione
+            const ctxRistrutturazione = document.getElementById('ristrutturazioneCostoChart').getContext('2d');
+            const ristrutturazioneCostoChart = new Chart(ctxRistrutturazione, {
+                type: 'line',
+                data: {
+                    labels: ['€650/mq', '€700/mq', '€750/mq', '€800/mq'],
+                    datasets: [{
+                        label: 'ROI (%)',
+                        data: [31.6, 28.9, 26.2, 23.8],
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgb(37, 99, 235)',
+                        borderWidth: 2,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Impatto del costo di ristrutturazione sul ROI',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 20,
+                            title: {
+                                display: true,
+                                text: 'ROI (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Costo ristrutturazione al mq'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Grafico flusso di cassa
+            const ctxCashFlow = document.getElementById('cashFlowChart').getContext('2d');
+            const cashFlowData = [
+                -1000000,
+                -1170007,
+                -1340014,
+                -1510021,
+                -972694,
+                -435367,
+                101960,
+                639287
+            ];
+            
+            const cashFlowChart = new Chart(ctxCashFlow, {
+                type: 'line',
+                data: {
+                    labels: ['Mese 1', 'Mese 2', 'Mese 3', 'Mese 4', 'Mese 5', 'Mese 6', 'Mese 7', 'Mese 8'],
+                    datasets: [{
+                        label: 'Flusso cumulativo (€)',
+                        data: cashFlowData,
+                        backgroundColor: function(context) {
+                            const value = context.dataset.data[context.dataIndex];
+                            return value < 0 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)';
+                        },
+                        borderColor: function(context) {
+                            const value = context.dataset.data[context.dataIndex];
+                            return value < 0 ? 'rgb(220, 38, 38)' : 'rgb(5, 150, 105)';
+                        },
+                        borderWidth: 2,
+                        tension: 0.1,
+                        fill: true,
+                        pointBackgroundColor: function(context) {
+                            const value = context.dataset.data[context.dataIndex];
+                            return value < 0 ? 'rgb(220, 38, 38)' : 'rgb(5, 150, 105)';
+                        }
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Flusso di cassa cumulativo',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 0,
+                                    yMax: 0,
+                                    borderColor: 'rgb(75, 85, 99)',
+                                    borderWidth: 1,
+                                    borderDash: [5, 5]
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Euro (€)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Periodo'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Grafico punto di pareggio
+            const ctxBreakEven = document.getElementById('breakEvenChart').getContext('2d');
+            const breakEvenChart = new Chart(ctxBreakEven, {
+                type: 'bar',
+                data: {
+                    labels: ['Prezzo di pareggio', 'Prezzo worst case', 'Prezzo base', 'Prezzo best case'],
+                    datasets: [{
+                        label: 'Prezzo al mq (€)',
+                        data: [1927.70, 2500, 2700, 3000],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.5)',
+                            'rgba(245, 158, 11, 0.5)',
+                            'rgba(16, 185, 129, 0.5)',
+                            'rgba(59, 130, 246, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgb(220, 38, 38)',
+                            'rgb(217, 119, 6)',
+                            'rgb(5, 150, 105)',
+                            'rgb(37, 99, 235)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Analisi del punto di pareggio',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Prezzo al mq (€)'
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+    
+    <footer>
+        <p>Analisi di Fattibilità - Progetto Immobiliare Parco Sim - San Giorgio</p>
+        <p>Ultima modifica: 13 marzo 2025</p>
+    </footer>
+</body>
+</html>
